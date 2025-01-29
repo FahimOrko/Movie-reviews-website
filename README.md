@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a React-based movie search and watchlist application that fetches movie data from the OMDB API. Users can search for movies, view details, and add them to their watchlist with personal ratings. Link to deployed website - https://movie-reviews-website-40pe3rbeg-life-in-a-nutshells-projects.vercel.app/
+This is a React-based movie search and watchlist application that fetches movie data from the OMDB API. Users can search for movies, view details, and add them to their watchlist with personal ratings. Link to deployed website - https://movie-reviews-website.vercel.app/
 
 ## Features
 
