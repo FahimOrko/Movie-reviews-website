@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { StarRaiting } from "./StarRaiting";
 import { Loader } from "./Loader";
+import { useKey } from "../hooks/useKey";
 
 export const MovieDetails = ({
   selectedId,
@@ -13,6 +14,9 @@ export const MovieDetails = ({
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [userStarRating, setUserStarRating] = useState("");
+
+  const countRef = useRef(0);
+
   const isWatched = watched.map((movies) => movies.imdbID).includes(selectedId);
   const watchedUserRating = watched.find(
     (movie) => movie.imdbID === selectedId
@@ -31,18 +35,9 @@ export const MovieDetails = ({
     Genre: genre,
   } = movie;
 
-  const handleAdd = () => {
-    const newMovie = {
-      title,
-      imdbID: selectedId,
-      poster,
-      imdbRating: Number(imdbRating),
-      runtime: Number(runtime.split(" ")[0]),
-      year,
-      userRating: userStarRating,
-    };
-    addWatchedMovie(newMovie);
-  };
+  useEffect(() => {
+    if (userStarRating) countRef.current++;
+  }, [userStarRating]);
 
   useEffect(() => {
     const getMovieDetails = async () => {
@@ -56,19 +51,7 @@ export const MovieDetails = ({
     getMovieDetails();
   }, [selectedId, movieIdFetchLink]);
 
-  useEffect(() => {
-    const callBack = (e) => {
-      if (e.code === "Escape") {
-        setSelectedId(null);
-      }
-    };
-
-    document.addEventListener("keydown", callBack);
-
-    return () => {
-      document.removeEventListener("keydown", callBack);
-    };
-  }, [setSelectedId]);
+  useKey("Escape", setSelectedId);
 
   useEffect(() => {
     if (!title) return;
@@ -78,6 +61,20 @@ export const MovieDetails = ({
       document.title = "Movie Reviews";
     };
   }, [title]);
+
+  const handleAdd = () => {
+    const newMovie = {
+      title,
+      imdbID: selectedId,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: Number(runtime.split(" ")[0]),
+      year,
+      userRating: userStarRating,
+      countRatingDesicision: countRef,
+    };
+    addWatchedMovie(newMovie);
+  };
 
   return isLoading ? (
     <Loader />
